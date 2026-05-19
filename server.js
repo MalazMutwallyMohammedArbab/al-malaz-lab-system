@@ -1,26 +1,19 @@
 const express = require('express');
 const cors = require('cors');
+const db = require('./database');
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
-const patientsRoutes = require('./routes/patients');
-app.use('/api/patients', patientsRoutes);
-
-// Start server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-const db = require("./database");
-
+// Create tables
 db.run(`
-  CREATE TABLE IF NOT EXISTS patients (
+CREATE TABLE IF NOT EXISTS patients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
-  labNumber ENTEGER NOT NULL,
+  labNumber INTEGER NOT NULL,
   phone TEXT,
   gender TEXT,
   age INTEGER,
@@ -45,8 +38,11 @@ CREATE TABLE IF NOT EXISTS results (
 )
 `);
 
-app.post("/api/results", (req, res) => {
+// Routes
+app.use('/api/patients', require('./routes/patients'));
 
+// Add results
+app.post("/api/results", (req, res) => {
   const {
     patient_id,
     labNumber,
@@ -59,7 +55,7 @@ app.post("/api/results", (req, res) => {
   } = req.body;
 
   const sql = `
-    INSERT INTO results 
+    INSERT INTO results
     (patient_id, labNumber, cbc, bffm, esr, urine, chemistry, serology)
     VALUES (?,?,?,?,?,?,?,?)
   `;
@@ -77,75 +73,61 @@ app.post("/api/results", (req, res) => {
       JSON.stringify(serology)
     ],
     function (err) {
+      if (err) return res.json({ success: false });
 
-      if (err) {
-        return res.json({ success:false });
-      }
-
-      // تحديث حالة المريض
       db.run(
         "UPDATE patients SET status='completed' WHERE id=?",
         [patient_id]
       );
 
-      res.json({ success:true,
-        id: this.lastID
-       });
-
+      res.json({ success: true, id: this.lastID });
     }
   );
-
 });
 
-
+// List results
 app.get("/api/results-list", (req, res) => {
-
   const sql = `
-  SELECT * FROM patients
-  WHERE status = 'completed'
-  ORDER BY created_at DESC
+    SELECT * FROM patients
+    WHERE status = 'completed'
+    ORDER BY createdAt DESC
   `;
 
   db.all(sql, [], (err, rows) => {
-
-    if (err) {
-      return res.json({ success:false });
-    }
+    if (err) return res.json({ success: false });
 
     res.json({
-      success:true,
+      success: true,
       patients: rows
     });
-
   });
-
 });
 
-// جلب نتيجة مريض واحد
+// Get single result
 app.get("/api/result/:id", (req, res) => {
-
   const patientId = req.params.id;
 
   const sql = `
-  SELECT patients.*, results.*
-  FROM patients
-  LEFT JOIN results
-  ON patients.id = results.patient_id
-  WHERE patients.id = ?
+    SELECT patients.*, results.*
+    FROM patients
+    LEFT JOIN results
+    ON patients.id = results.patient_id
+    WHERE patients.id = ?
   `;
 
   db.get(sql, [patientId], (err, row) => {
-
-    if (err) {
-      console.log(err);
-      return res.json({ success:false });
-    }
+    if (err) return res.json({ success: false });
 
     res.json({
-      success:true,
+      success: true,
       result: row
     });
-
   });
+});
 
+// Start server
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
