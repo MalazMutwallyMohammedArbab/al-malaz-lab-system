@@ -7,8 +7,6 @@ import Urine from "../Components/Tests/Urine";
 import Chemistry from "../Components/Tests/Chemistry";
 import Serology from "../Components/Tests/Serology";
 
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 function ResultViewPage() {
   const { id } = useParams();
