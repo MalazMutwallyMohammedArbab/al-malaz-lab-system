@@ -67,7 +67,7 @@ function ResultsListPage() {
 
               <td>{r.tests}</td>
 
-              <td>{new Date(r.created_at).toLocaleDateString()}</td>
+              <td>{new Date(r.created_at || r.createdAt).toLocaleDateString()}</td>
 
               <td>
                 <button onClick={() => navigate(`/result/${r.id}`)}>

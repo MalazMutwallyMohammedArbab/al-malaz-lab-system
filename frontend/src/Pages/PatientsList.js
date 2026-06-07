@@ -98,7 +98,7 @@ function PatientsList() {
                   ? patient.tests.join(", ")
                   : "لا يوجد فحوصات"}
               </td>
-              <td>{patient.created_at || "غير محدد"}</td>
+              <td>{patient.created_at || patient.createdAt || "غير محدد"}</td>
               <td><button onClick={() => handlePrint(patient)}>طباعة</button></td>
               <td><button onClick={() => navigate(`/results/${patient.id}`)}>إضافة نتيجة</button></td>
             </tr>
