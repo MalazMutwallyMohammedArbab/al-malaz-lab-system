@@ -10,7 +10,7 @@ function ResultsListPage() {
 
   useEffect(() => {
 
-    fetch("http://localhost:5000/api/results-list")
+    fetch("https://al-malaz-lab-system-1.onrender.com/api/results-list")
       .then(res => res.json())
       .then(data => {
         if (data.success) {

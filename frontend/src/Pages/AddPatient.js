@@ -33,7 +33,7 @@ function AddPatient() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/patients/register",
+        "https://al-malaz-lab-system-1.onrender.com/api/patients/register",
         {
           method: "POST",
           headers: {
@@ -57,7 +57,7 @@ function AddPatient() {
         setSavedPatient(data.patient);
 
         // جلب الرقم التالي
-        fetch("http://localhost:5000/api/patients/next-lab-number")
+        fetch("https://al-malaz-lab-system-1.onrender.com/api/patients/next-lab-number")
         .then(res=>res.json())
         .then(d=>{
         if(d.success){
@@ -85,7 +85,7 @@ function AddPatient() {
 
   // توليد رقم معمل جديد
   useEffect(() => {
-  fetch("http://localhost:5000/api/patients/next-lab-number")
+  fetch("https://al-malaz-lab-system-1.onrender.com/api/patients/next-lab-number")
     .then(res => res.json())
     .then(data => {
       if (data.success) {

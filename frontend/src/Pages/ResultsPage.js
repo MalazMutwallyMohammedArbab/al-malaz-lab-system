@@ -21,7 +21,7 @@ function ResultsPage() {
   const [serologyResults, setSerologyResults] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/patients/${id}`)
+    fetch(`https://al-malaz-lab-system-1.onrender.com/api/patients/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) setPatient(data.patient);
@@ -47,7 +47,7 @@ function ResultsPage() {
     serology: serologyResults
   };
 
-  const res = await fetch("http://localhost:5000/api/results", {
+  const res = await fetch("https://al-malaz-lab-system-1.onrender.com/api/results", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

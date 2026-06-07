@@ -14,7 +14,7 @@ function PatientsList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/patients")
+    fetch("https://al-malaz-lab-system-1.onrender.com/api/patients")
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched patients:", data);

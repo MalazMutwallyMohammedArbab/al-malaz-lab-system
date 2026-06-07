@@ -20,7 +20,7 @@ function ResultViewPage() {
   const [serologyResults, setSerologyResults] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/result/${id}`)
+    fetch(`https://al-malaz-lab-system-1.onrender.com/api/result/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
