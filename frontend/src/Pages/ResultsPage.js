@@ -6,6 +6,8 @@ import ESR from "../Components/Tests/ESR";
 import Urine from "../Components/Tests/Urine";
 import Chemistry from "../Components/Tests/Chemistry";
 import Serology from "../Components/Tests/Serology";
+import Swal from "sweetalert2";
+import { API_URL } from "../config";
 
 function ResultsPage() {
   const { id } = useParams();
@@ -21,19 +23,38 @@ function ResultsPage() {
   const [serologyResults, setSerologyResults] = useState([]);
 
   useEffect(() => {
-    fetch(`https://al-malaz-lab-system-1.onrender.com/api/patients/${id}`)
+    fetch(`${API_URL}/patients/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) setPatient(data.patient);
       });
   }, [id]);
 
-  if (!patient) return <p>جاري تحميل بيانات المريض...</p>;
+  if (!patient) {
+    return (
+        <div className="page-container">
+            <div className="card empty-state">
+                <h2>⏳</h2>
+                <h3>جارٍ تحميل بيانات المريض...</h3>
+            </div>
+        </div>
+    );
+  }
 
   const handleSave = async () => {
     // بوبوب تأكيد حفظ النتيجة
-    const confirmSave = window.confirm("هل أنت متأكد من حفظ النتائج؟");
-    if (!confirmSave) return;
+    const result = await Swal.fire({
+  title: "تأكيد الحفظ",
+  text: "هل تريد حفظ نتائج هذا المريض؟",
+  icon: "question",
+  showCancelButton: true,
+  confirmButtonText: "حفظ",
+  cancelButtonText: "إلغاء",
+  confirmButtonColor: "#0d6efd",
+  cancelButtonColor: "#6c757d",
+});
+
+if (!result.isConfirmed) return;
 
   const allResults = {
     patient_id: patient.id,
@@ -47,7 +68,7 @@ function ResultsPage() {
     serology: serologyResults
   };
 
-  const res = await fetch("https://al-malaz-lab-system-1.onrender.com/api/results", {
+  const res = await fetch(`${API_URL}/results`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -58,36 +79,46 @@ function ResultsPage() {
   const data = await res.json();
 
   if (data.success) {
-    alert("تم حفظ النتائج بنجاح ✅");
+    await Swal.fire({
+      icon: "success",
+      title: "تم الحفظ",
+      text: "تم حفظ النتائج بنجاح.",
+      confirmButtonText: "حسناً",
+      confirmButtonColor: "#0d6efd"
+    });
 
     // تحويل لصفحة قائمة النتائج
     navigate('/results');
   } else {
-    alert("حدث خطأ أثناء الحفظ");
+    Swal.fire({
+      icon: "error",
+      title: "حدث خطأ",
+      text: "تعذر حفظ النتائج.",
+      confirmButtonText: "إغلاق",
+    });
   }
-
-};
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 style={{ textAlign: "center" }}>إدخال نتائج المريض</h2>
-      <p><b>الاسم:</b> {patient.name}</p>
-      <p><b>رقم المعمل:</b> {patient.labNumber}</p>
+    <div className="page-container">
+      <h2 className="page-title">🧪 إدخال نتائج المريض</h2>
+      <p className="page-description">أدخل نتائج الفحوصات المطلوبة ثم احفظ التقرير</p>
+      <div className="card patient-info">
+        <p>👤 <strong>الاسم:</strong> {patient.name}</p>
+        <p>🧪 <strong>رقم المعمل:</strong> {patient.labNumber}</p>
+      </div>
 
-      {patient.tests.includes("CBC") && <CBC data={cbcResults} onChange={(p,v)=>setCbcResults(prev=>({...prev,[p]:v}))} />}
-      {patient.tests.includes("BFFM") && <BFFM value={bffmResults} onChange={setBffmResults} />}
+      {patient.tests.includes("CBC") && <div className="card"><CBC data={cbcResults} onChange={(p,v)=>setCbcResults(prev=>({...prev,[p]:v}))} /></div>}
+      {patient.tests.includes("BFFM") && <div className="card"><BFFM value={bffmResults} onChange={setBffmResults} /></div>}
 
-      {patient.tests.includes("ESR") && <ESR value={esrResults} onChange={setEsrResults} />}
+      {patient.tests.includes("ESR") && <div className="card"><ESR value={esrResults} onChange={setEsrResults} /></div>}
 
-      {patient.tests.includes("URINE") && <Urine urineData={urineResults.urine || []} stoolData={urineResults.stool || []} onChange={(data) => setUrineResults(data)} />}
-      {patient.tests.includes("Chemistry") && <Chemistry tests={chemistryResults} onChange={setChemistryResults} readOnly={false} />}
-      {patient.tests.includes("Serology") && <Serology data={serologyResults} onChange={setSerologyResults} />}
+      {patient.tests.includes("URINE") && <div className="card"><Urine urineData={urineResults.urine || []} stoolData={urineResults.stool || []} onChange={(data) => setUrineResults(data)} /></div>}
+      {patient.tests.includes("Chemistry") && <div className="card"><Chemistry tests={chemistryResults} onChange={setChemistryResults} readOnly={false} /></div>}
+      {patient.tests.includes("Serology") && <div className="card"><Serology data={serologyResults} onChange={setSerologyResults} /></div>}
 
-      <button
-        onClick={handleSave}
-        style={{ marginTop: "20px", padding: "10px 20px", backgroundColor:"#4CAF50", color:"white", border:"none", cursor:"pointer" }}
-      >
-        حفظ النتائج
+      <button onClick={handleSave} className="btn">
+        💾 حفظ النتائج
       </button>
     </div>
   );

@@ -1,19 +1,35 @@
 import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 function Navbar() {
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    window.location.href = "/login";
+  };
+
   return (
-    <nav className="navbar" style={{ padding: "10px", background: "#eee", fontSize: "28px", display: "flex", justifyContent: "center" }}>
-      <Link to="/" style={{ marginLeft: "10px", border: "1px, solid, blue", padding: "6px" }}>
-        تسجيل مريض
-      </Link>
+    <nav className="navbar">
 
-      <Link to="/patients" style={{ marginLeft: "10px", border: "1px, solid, blue", padding: "6px" }}>
-        عرض المرضى
-      </Link>
+      <div className="navbar-logo">
+        🧪 AL-MALAZ LAB SYSTEM
+      </div>
 
-      <Link to="/results" style={{ marginLeft: "10px", border: "1px, solid, blue", padding: "6px" }}>
-        قائمة النتائج
-      </Link>
+      <div className="navbar-links">
+        <Link to="/">تسجيل مريض</Link>
+
+        <Link to="/patients">
+          عرض المرضى
+        </Link>
+
+        <Link to="/results">
+          قائمة النتائج
+        </Link>
+      </div>
+
+      <button className="logout-btn" onClick={handleLogout}>
+        تسجيل الخروج
+      </button>
+
     </nav>
   );
 }

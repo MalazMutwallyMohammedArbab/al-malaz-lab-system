@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import TestsSelect from "../Components/TestsSelect";
 import PrintPatient from "../Components/PrintPatient";
+import { FaUserPlus } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { API_URL } from "../config";
 
 function AddPatient() {
   const [name, setName] = useState("");
@@ -16,8 +19,17 @@ function AddPatient() {
 
     if (!isFormValid) return;
 
-    const confirmSave = window.confirm("تأكيد الحفظ؟");
-    if (!confirmSave) return;
+    const result = await Swal.fire({
+    title: "تأكيد الحفظ",
+    text: "هل تريد حفظ بيانات المريض؟",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "حفظ",
+    cancelButtonText: "إلغاء",
+    confirmButtonColor: "#0d6efd"
+    });
+
+    if (!result.isConfirmed) return;
 
     const patientData = {
       name: name,
@@ -33,7 +45,7 @@ function AddPatient() {
 
     try {
       const response = await fetch(
-        "https://al-malaz-lab-system-1.onrender.com/api/patients/register",
+        `${API_URL}/patients/register`,
         {
           method: "POST",
           headers: {
@@ -51,13 +63,19 @@ function AddPatient() {
       const data = await response.json();
       console.log("Server Response:", data);
 
-      alert("تم تسجيل المريض بنجاح ✅");
+      Swal.fire({
+      icon: "success",
+      title: "تم الحفظ",
+      text: "تم تسجيل المريض بنجاح.",
+      confirmButtonText: "حسناً",
+      confirmButtonColor: "#0d6efd"
+      });
       console.log("Saved patient:", data.patient);
       if (data.success){
         setSavedPatient(data.patient);
 
         // جلب الرقم التالي
-        fetch("https://al-malaz-lab-system-1.onrender.com/api/patients/next-lab-number")
+        fetch(`${API_URL}/patients/next-lab-number`)
         .then(res=>res.json())
         .then(d=>{
         if(d.success){
@@ -75,7 +93,12 @@ function AddPatient() {
 
     } catch (error) {
       console.error("Error:", error.message);
-      alert("حصل خطأ ❌");
+      Swal.fire({
+      icon: "error",
+      title: "حدث خطأ",
+      text: "تعذر تسجيل المريض.",
+      confirmButtonText: "إغلاق",
+      });
     }
   };
 
@@ -85,7 +108,7 @@ function AddPatient() {
 
   // توليد رقم معمل جديد
   useEffect(() => {
-  fetch("https://al-malaz-lab-system-1.onrender.com/api/patients/next-lab-number")
+  fetch(`${API_URL}/patients/next-lab-number`)
     .then(res => res.json())
     .then(data => {
       if (data.success) {
@@ -96,13 +119,18 @@ function AddPatient() {
 }, []);
 
   return (
-    <div>
-      <h2 style={{fontSize: "40px", textAlign: "center"}}>تسجيل مريض</h2>
+    <div className="page-container">
+      <h2 className="page-title">
+        <FaUserPlus />
+        {" "}
+        تسجيل مريض جديد
+      </h2>
+      <p className="page-description">أدخل بيانات المريض ثم اختر الفحوصات المطلوبة</p>
 
-      <form className="hidden" onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        <div style={{display: "flex", alignItems: "center", width: "80%", justifyContent: "center"}}>
-          <label htmlFor="name" style={{fontSize: "18px", width: "20%", textAlign: "center"}}>اسم المريض: </label>
-          <input id="name" style={{padding: "10px", margin: "10px 0", border: "1px, solid, blue"}}
+      <form className="card patient-form" onSubmit={handleSubmit}>
+        <div className="form-row">
+          <label htmlFor="name" className="form-label">اسم المريض: </label>
+          <input id="name" className="input"
             type="text"
             placeholder="اسم المريض"
             value={name}
@@ -111,18 +139,18 @@ function AddPatient() {
           />
         </div>
 
-        <div style={{display: "flex", alignItems: "center", width: "80%", justifyContent: "center"}}>
-          <label htmlFor="labNumber" style={{fontSize: "18px", width: "20%", textAlign: "center"}}>رقم المعمل: </label>
-          <input id= "labNumber" style={{padding: "10px", margin: "10px 0", border: "1px, solid, blue"}}
+        <div className="form-row">
+          <label htmlFor="labNumber" className="form-label">رقم المعمل: </label>
+          <input id= "labNumber" className="input"
             type="text"
             value={labNumber}
             readOnly
           />
         </div>
 
-        <div style={{display: "flex", alignItems: "center", width: "80%", justifyContent: "center"}}>
-          <label htmlFor="phone" style={{fontSize: "18px", width: "20%", textAlign: "center"}}>رقم الهاتف: </label>
-          <input id= "phone" style={{padding: "10px", margin: "10px 0", border: "1px, solid, blue"}}
+        <div className="form-row">
+          <label htmlFor="phone" className="form-label">رقم الهاتف: </label>
+          <input id= "phone" className="input"
             type="text"
             placeholder="رقم الهاتف"
             value={phone}
@@ -131,10 +159,10 @@ function AddPatient() {
           />
         </div>
 
-        <div style={{display: "flex", alignItems: "center", width: "80%", justifyContent: "center"}}>
-          <label htmlFor="gender" style={{fontSize: "18px", width: "20%", textAlign: "center"}}>الجنس: </label>
+        <div className="form-row">
+          <label htmlFor="gender" className="form-label">الجنس: </label>
           <select
-          id="gender" style={{padding: "10px", margin: "10px 0", border: "1px, solid, blue"}}
+          id="gender" className="input"
           value={gender}
           onChange={(e) => setGender(e.target.value)}
           >
@@ -144,9 +172,9 @@ function AddPatient() {
           </select>
         </div>
 
-        <div style={{display: "flex", alignItems: "center", width: "80%", justifyContent: "center"}}>
-          <label htmlFor="age" style={{fontSize: "18px", width: "20%", textAlign: "center"}}>العمر: </label>
-          <input id= "age" style={{padding: "10px", margin: "10px 0", border: "1px, solid, blue"}}
+        <div className="form-row">
+          <label htmlFor="age" className="form-label">العمر: </label>
+          <input id= "age" className="input"
             type="number"
             placeholder="العمر"
             value={age}
@@ -156,7 +184,7 @@ function AddPatient() {
 
         <TestsSelect selectedTests={tests} onChange={setTests} />
 
-        <button style={{padding: "8px 15px", margin: "10px 0", border: "none", color: "white", backgroundColor: isFormValid? "#4CAF50" : "#333", cursor: isFormValid? "pointer" : "not-allowed"}} 
+        <button className="btn"
         type="submit" disabled={!isFormValid}>حفظ</button>
       </form>
       <PrintPatient patient={savedPatient} onClose={() => setSavedPatient(null)} />

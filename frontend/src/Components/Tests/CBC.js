@@ -1,4 +1,5 @@
 import React from "react";
+import "./cbc.css";
 
 export default function CBC({ data, onChange, readOnly }) {
   const parameters = [
@@ -25,37 +26,83 @@ export default function CBC({ data, onChange, readOnly }) {
     { name: "P-LCR", unit: "%", normal: "15 - 35" }
   ];
 
+  const middle = Math.ceil(parameters.length / 2);
+
+  const leftParameters = parameters.slice(0, middle);
+  const rightParameters = parameters.slice(middle);
+
   return (
-    <div style={{ border: "1px solid #ccc", padding: "7px", margin: "10px 0", direction: "ltr" }}>
-      <h3 style={{ textAlign: "center", fontWeight: "bold" }}>CBC</h3>
-      <table className="cbc-table" style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f0f0f0" }}>
-            <th style={{ border: "1px solid #ccc", padding: "8px" }}>Para</th>
-            <th style={{ border: "1px solid #ccc", padding: "8px" }}>Result</th>
-            <th style={{ border: "1px solid #ccc", padding: "8px" }}>Unit</th>
-            <th style={{ border: "1px solid #ccc", padding: "8px" }}>Normal Range</th>
-          </tr>
-        </thead>
-        <tbody>
-          {parameters.map((param, i) => (
-            <tr key={i}>
-              <td style={{ border: "1px solid #ccc", padding: "6px" }}>{param.name}</td>
-              <td style={{ border: "1px solid #ccc", padding: "6px" }}>
-                <input
-                  type="text"
-                  value={data[param.name] || ""}
-                  readOnly={readOnly}
-                  onChange={(e) => onChange(param.name, e.target.value)}
-                  style={{ width: "90%" }}
-                />
-              </td>
-              <td style={{ border: "1px solid #ccc", padding: "6px" }}>{param.unit}</td>
-              <td style={{ border: "1px solid #ccc", padding: "6px" }}>{param.normal}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="report-card">
+      <h3 className="report-title">CBC</h3>
+      <div className="cbc-tables">
+
+  <table className="report-table">
+    <thead>
+      <tr>
+        <th>Para</th>
+        <th>Result</th>
+        <th>Unit</th>
+        <th>Normal Range</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {leftParameters.map((param) => (
+        <tr key={param.name}>
+          <td>{param.name}</td>
+
+          <td>
+            <input
+              className="report-input"
+              type="text"
+              value={data[param.name] || ""}
+              readOnly={readOnly}
+              onChange={(e) => onChange(param.name, e.target.value)}
+            />
+          </td>
+
+          <td>{param.unit}</td>
+
+          <td>{param.normal}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <table className="report-table">
+    <thead>
+      <tr>
+        <th>Para</th>
+        <th>Result</th>
+        <th>Unit</th>
+        <th>Normal Range</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {rightParameters.map((param) => (
+        <tr key={param.name}>
+          <td>{param.name}</td>
+
+          <td>
+            <input
+              className="report-input"
+              type="text"
+              value={data[param.name] || ""}
+              readOnly={readOnly}
+              onChange={(e) => onChange(param.name, e.target.value)}
+            />
+          </td>
+
+          <td>{param.unit}</td>
+
+          <td>{param.normal}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+</div>
     </div>
   );
 }

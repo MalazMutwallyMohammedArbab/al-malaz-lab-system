@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import PrintPatient from "../Components/PrintPatient";
 //import ResultsEntry from "../Components/ResultEntry";
 import {useNavigate} from "react-router-dom";
+import { FaUsers } from "react-icons/fa";
+import { FaPrint } from "react-icons/fa";
+import { FaFlask } from "react-icons/fa";
+import { API_URL } from "../config";
 
 
 function PatientsList() {
@@ -14,7 +18,7 @@ function PatientsList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://al-malaz-lab-system-1.onrender.com/api/patients")
+    fetch(`${API_URL}/patients`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched patients:", data);
@@ -35,8 +39,27 @@ function PatientsList() {
       });
   }, []);
 
-  if (loading) return <p>جارٍ تحميل المرضى...</p>;
-  if (patients.length === 0) return <p>لا يوجد مرضى مسجلين حتى الآن</p>;
+  if (loading) {
+  return (
+    <div className="page-container">
+      <div className="card empty-state">
+        <h2>⏳</h2>
+        <h3>جارٍ تحميل المرضى...</h3>
+      </div>
+    </div>
+  );}
+  if (patients.length === 0) {
+  return (
+    <div className="page-container">
+      <div className="card empty-state">
+        <h2>👥</h2>
+        <h3>لا يوجد مرضى مسجلون حتى الآن</h3>
+        <p>
+          ابدأ بتسجيل أول مريض ليظهر في هذه القائمة.
+        </p>
+      </div>
+    </div>
+  );}
 
   // دالة الطباعة
   const handlePrint = (patient) => {
@@ -56,20 +79,22 @@ function PatientsList() {
   });
 
   return (
-    <div>
+    <div className="page-container">
+
       <input
       type="text"
-      placeholder="بحث برقم المعمل أو الاسم أو التاريخ"
+      placeholder="🔍 بحث برقم المعمل أو الاسم أو التاريخ"
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
-      style={{marginBottom:"15px", padding:"8px", width:"250px"}}
+      className="input search-input"
       />
-      <h2>قائمة المرضى</h2>
-      <table className="hidden"
-        border="1"
-        cellPadding="8"
-        style={{ borderCollapse: "collapse", width: "100%" }}
-      >
+      <h2 className="page-title">
+        <FaUsers />
+        {" "}
+        قائمة المرضى
+      </h2>
+      <p className="page-description">يمكنك البحث عن مريض أو طباعة بياناته أو إضافة النتائج</p>
+      <table className="hidden card table-container">
         <thead>
           <tr>
             <th>ID</th>
@@ -99,8 +124,16 @@ function PatientsList() {
                   : "لا يوجد فحوصات"}
               </td>
               <td>{patient.created_at || patient.createdAt || "غير محدد"}</td>
-              <td><button onClick={() => handlePrint(patient)}>طباعة</button></td>
-              <td><button onClick={() => navigate(`/results/${patient.id}`)}>إضافة نتيجة</button></td>
+              <td><button className="btn" onClick={() => handlePrint(patient)}>
+                <FaPrint />
+                {" "}
+                طباعة
+                </button></td>
+              <td><button className="btn" onClick={() => navigate(`/results/${patient.id}`)}>
+                <FaFlask />
+                {" "}
+                إضافة نتيجة
+                </button></td>
             </tr>
           ))}
         </tbody>

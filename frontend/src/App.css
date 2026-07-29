@@ -9,7 +9,7 @@
   font-family: "Arial", sans-serif;
   line-height: 1.4;
   color: #000;
-}
+} 
 
 /* عناوين */
 .print-area h2, .print-area h3 {
@@ -95,7 +95,7 @@ padding:5px;
     left: 0;
     width: 100%;
   }
-  .print-btn, .close-btn, .navbar, .hidden {
+  .print-btn, .close-btn, .navbar, .hidden, .btn {
     display: none !important;
   }
 

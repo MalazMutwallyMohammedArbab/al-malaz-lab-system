@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./urine.css";
 
 function Urine({ urineData = [], stoolData = [], onChange }) {
   // بيانات افتراضية إذا ما في بيانات
@@ -37,67 +38,71 @@ function Urine({ urineData = [], stoolData = [], onChange }) {
   ];
 
   return (
-    <div style={{ display: "flex", gap: "30px", direction: "ltr", marginTop: "20px" }}>
-      {/* URINE */}
-      <div className="urine-table" style={{ flex: 1, borderRight: "2px solid #333", paddingRight: "10px" }}>
-        <h3 style={{ textAlign: "center", fontSize: "20px", marginBottom: "8px" }}>URINE</h3>
-        {/* Macroscopic */}
-        {urineParameters.slice(0, 7).map((param, idx) => (
-          <div key={idx} style={{ display: "flex", marginBottom: "6px", alignItems: "center" }}>
-            <div style={{ width: "120px" }}>{param}</div>
-            <input
-              type="text"
-              value={(urine[idx] && urine[idx].result) || ""}
-              onChange={(e) => handleUrineChange(idx, e.target.value)}
-              style={{ flex: 1, border: "1px solid #333", padding: "4px" }}
-            />
-          </div>
-        ))}
+  <div className="urine-container">
 
-        <h4 style={{ textAlign: "center", fontSize: "18px", marginBottom: "6px", marginTop: "14px" }}>Microscopic</h4>
-        {urineParameters.slice(7).map((param, idx) => (
-          <div key={idx} style={{ display: "flex", marginBottom: "6px", alignItems: "center" }}>
-            <div style={{ width: "120px" }}>{param}</div>
-            <input
-              type="text"
-              value={(urine[7 + idx] && urine[7 + idx].result) || ""}
-              onChange={(e) => handleUrineChange(7 + idx, e.target.value)}
-              style={{ flex: 1, border: "1px solid #333", padding: "4px" }}
-            />
-          </div>
-        ))}
-      </div>
+    {/* URINE */}
+    <div className="urine-table">
+      <h3>URINE</h3>
 
-      {/* STOOL */}
-      <div className="stool-table" style={{ flex: 1, paddingLeft: "10px" }}>
-        <h3 style={{ textAlign: "center", fontSize: "20px", marginBottom: "8px" }}>STOOL</h3>
-        {/* Macroscopic */}
-        {stoolParameters.slice(0, 5).map((param, idx) => (
-          <div key={idx} style={{ display: "flex", marginBottom: "6px", alignItems: "center" }}>
-            <div style={{ width: "120px" }}>{param}</div>
-            <input
-              type="text"
-              value={(stool[idx] && stool[idx].result) || ""}
-              onChange={(e) => handleStoolChange(idx, e.target.value)}
-              style={{ flex: 1, border: "1px solid #333", padding: "4px" }}
-            />
-          </div>
-        ))}
+      {urineParameters.slice(0, 7).map((param, idx) => (
+        <div key={idx} className="urine-row">
+          <div className="parameter">{param}</div>
+          <input
+            className="result-input"
+            type="text"
+            value={(urine[idx] && urine[idx].result) || ""}
+            onChange={(e) => handleUrineChange(idx, e.target.value)}
+          />
+        </div>
+      ))}
 
-        <h4 style={{ textAlign: "center", fontSize: "18px", marginBottom: "6px", marginTop: "14px" }}>Microscopic</h4>
-        {stoolParameters.slice(5).map((param, idx) => (
-          <div key={idx} style={{ display: "flex", marginBottom: "6px", alignItems: "center" }}>
-            <div style={{ width: "120px" }}>{param}</div>
-            <input
-              type="text"
-              value={(stool[5 + idx] && stool[5 + idx].result) || ""}
-              onChange={(e) => handleStoolChange(5 + idx, e.target.value)}
-              style={{ flex: 1, border: "1px solid #333", padding: "4px" }}
-            />
-          </div>
-        ))}
-      </div>
+      <h4>Microscopic</h4>
+
+      {urineParameters.slice(7).map((param, idx) => (
+        <div key={idx} className="urine-row">
+          <div className="parameter">{param}</div>
+          <input
+            className="result-input"
+            type="text"
+            value={(urine[7 + idx] && urine[7 + idx].result) || ""}
+            onChange={(e) => handleUrineChange(7 + idx, e.target.value)}
+          />
+        </div>
+      ))}
     </div>
+
+    {/* STOOL */}
+    <div className="stool-table">
+      <h3>STOOL</h3>
+
+      {stoolParameters.slice(0, 5).map((param, idx) => (
+        <div key={idx} className="urine-row">
+          <div className="parameter">{param}</div>
+          <input
+            className="result-input"
+            type="text"
+            value={(stool[idx] && stool[idx].result) || ""}
+            onChange={(e) => handleStoolChange(idx, e.target.value)}
+          />
+        </div>
+      ))}
+
+      <h4>Microscopic</h4>
+
+      {stoolParameters.slice(5).map((param, idx) => (
+        <div key={idx} className="urine-row">
+          <div className="parameter">{param}</div>
+          <input
+            className="result-input"
+            type="text"
+            value={(stool[5 + idx] && stool[5 + idx].result) || ""}
+            onChange={(e) => handleStoolChange(5 + idx, e.target.value)}
+          />
+        </div>
+      ))}
+    </div>
+
+  </div>
   );
 }
 

@@ -1,8 +1,8 @@
 function ESR({ value = "", onChange, readOnly }) {
 
   return (
-    <div style={{marginTop: "15px",border: "1px solid #ccc",
-      padding: "10px",direction: "ltr",display: "flex",alignItems: "center"}}>
+    <div style={{marginTop: "15px",border: "1px solid #ccc", background: "white",
+      padding: "2px",direction: "ltr",display: "flex",alignItems: "center", borderRadius: "10px"}}>
 
       <h4 style={{ fontWeight: "bold", width: "80px" }}>ESR:</h4>
 

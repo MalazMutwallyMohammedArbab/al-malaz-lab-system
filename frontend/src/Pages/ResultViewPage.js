@@ -6,6 +6,7 @@ import ESR from "../Components/Tests/ESR";
 import Urine from "../Components/Tests/Urine";
 import Chemistry from "../Components/Tests/Chemistry";
 import Serology from "../Components/Tests/Serology";
+import { API_URL } from "../config";
 
 
 function ResultViewPage() {
@@ -20,7 +21,7 @@ function ResultViewPage() {
   const [serologyResults, setSerologyResults] = useState([]);
 
   useEffect(() => {
-    fetch(`https://al-malaz-lab-system-1.onrender.com/api/result/${id}`)
+    fetch(`${API_URL}/result/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -37,14 +38,22 @@ function ResultViewPage() {
       });
   }, [id]);
 
-  if (!patient) return <p>جاري تحميل النتيجة...</p>;
+  if (!patient) {
+  return (
+    <div className="page-container">
+      <div className="card empty-state">
+        <h2>⏳</h2>
+        <h3>جارٍ تحميل النتيجة...</h3>
+      </div>
+    </div>
+  );}
 
   const header = (
   <div>
-    <h1 style={{ textAlign: "center" }}>AL-MALAZ LABORATORY</h1>
+    <h3 style={{ textAlign: "center" }}>AL-MALAZ LABORATORY</h3>
     <p style={{ textAlign: "center" }}>Khartoum - Sudan</p>
     <hr />
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className="patient-info-result">
       <p><b>الاسم:</b> {patient.name}</p>
       <p><b>رقم المعمل:</b> {patient.labNumber}</p>
       <p><b>الهاتف:</b> {patient.phone}</p>
@@ -89,7 +98,7 @@ function ResultViewPage() {
   };
 
   return (
-  <div style={{ padding: "20px" }} id="reportContent">
+  <div className="page-container" id="reportContent">
 
   {/* النتائج */}
   {/* الصفحة 1 */}
@@ -140,8 +149,8 @@ function ResultViewPage() {
 )}
 
   {/* زر الطباعة */}
-  <div style={{ textAlign: "center", marginTop: "20px", display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-    <button style={{ marginLeft: "9px" }} className="print-btn" onClick={() =>{
+  <div className="actions">
+    <button className="btn" onClick={() =>{
       // حفظ اسم الموقع الأصلي
       const originTitle = "نظام طبي";
 
@@ -160,7 +169,7 @@ function ResultViewPage() {
     </button>
 
     {/* زر إرسال واتساب */}
-  <button style={{ marginRight: "9px" }} onClick={openWhatsApp} className="print-btn">
+  <button onClick={openWhatsApp} className="btn">
   📤 إرسال واتساب
   </button>
   </div>
